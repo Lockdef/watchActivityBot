@@ -26,16 +26,16 @@ class TwitterApp():
 
     def callback(self):
         redirect_response = request.url
-        twitter = OAuth1Session(self.API_KEY, self.API_KEY_SECRET)
+        twitter = OAuth1Session(API_KEY, API_KEY_SECRET)
         twitter.parse_authorization_response(redirect_response)
         response = twitter.fetch_access_token(self.ACCESS_TOKEN_URL)
 
         OAUTH_TOKEN = response.get('oauth_token')
         OAUTH_TOKEN_SECRET = response.get('oauth_token_secret')
 
-        twitter = OAuth1Session(self.API_KEY, self.API_KEY_SECRET,
+        twitter = OAuth1Session(API_KEY, API_KEY_SECRET,
                                 OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-        params = {'description': '負けた'}
+        params = {'description': '負けたのか'}
 
         response = twitter.post(self.USER_UPDATE_PROFILE_URL, params=params)
         results = json.loads(response.text)
