@@ -2,12 +2,17 @@ import json
 from urllib.parse import parse_qsl
 from requests_oauthlib import OAuth1Session
 from flask import jsonify, request
-from setting import API_KEY, API_KEY_SECRET
+from setting import API_KEY, API_KEY_SECRET, DISCORD_TOKEN
+from discordBot import DiscordBot
 
 
 class TwitterApp():
 
     def __init__(self):
+
+        self.discordBot = DiscordBot()
+        self.discordBot.run(DISCORD_TOKEN)
+
         self.REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token'
         self.AUTHENTICATE_URL = 'https://api.twitter.com/oauth/authenticate'
         self.ACCESS_TOKEN_URL = 'https://api.twitter.com/oauth/access_token'
@@ -35,7 +40,9 @@ class TwitterApp():
 
         twitter = OAuth1Session(API_KEY, API_KEY_SECRET,
                                 OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-        params = {'description': '負けたのか'}
+        self.discordBot.set_username("lock")
+        activity = self.discordBot.activity
+        params = {'description': f'Now Playing: {activity}'}
 
         response = twitter.post(self.USER_UPDATE_PROFILE_URL, params=params)
         results = json.loads(response.text)
