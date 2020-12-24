@@ -11,6 +11,7 @@ class TwitterApp():
     def __init__(self):
 
         self.discordBot = DiscordBot()
+        self.discordBot.add_username("Lock")
 
         self.REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token'
         self.AUTHENTICATE_URL = 'https://api.twitter.com/oauth/authenticate'
@@ -42,7 +43,6 @@ class TwitterApp():
 
         twitter = OAuth1Session(API_KEY, API_KEY_SECRET,
                                 OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-        self.discordBot.set_username("Lock")
         activity = self.discordBot.activity
         params = {'description': f'Now Playing: {activity}'}
 
