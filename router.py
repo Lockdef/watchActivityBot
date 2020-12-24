@@ -1,4 +1,6 @@
 import os
+from threading import Thread
+import asyncio
 from flask import Flask
 from twitterApp import TwitterApp
 
@@ -19,7 +21,8 @@ def callback():
 if __name__ == "__main__":
     port = os.environ.get('PORT', 3333)
     host = '0.0.0.0'
-    app.run(
-        host=host,
-        port=port,
-    )
+    app_thread = Thread(target=app.run, args=(host, port))
+    app_thread.start()
+    loop = asyncio.get_event_loop()
+    loop.create_task(twitterApp.run_discord_bot())
+    Thread(target=loop.run_forever())
