@@ -11,13 +11,15 @@ class TwitterApp():
     def __init__(self):
 
         self.discordBot = DiscordBot()
-        self.discordBot.run(DISCORD_TOKEN)
 
         self.REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token'
         self.AUTHENTICATE_URL = 'https://api.twitter.com/oauth/authenticate'
         self.ACCESS_TOKEN_URL = 'https://api.twitter.com/oauth/access_token'
         self.CALLBACK_URL = 'http://localhost:3334/twitter/callback'
         self.USER_UPDATE_PROFILE_URL = 'https://api.twitter.com/1.1/account/update_profile.json'
+
+    def run_discord_bot(self):
+        return self.discordBot.start(DISCORD_TOKEN)
 
     def get_request_token(self):
         twitter = OAuth1Session(API_KEY, API_KEY_SECRET)
@@ -40,7 +42,7 @@ class TwitterApp():
 
         twitter = OAuth1Session(API_KEY, API_KEY_SECRET,
                                 OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-        self.discordBot.set_username("lock")
+        self.discordBot.set_username("Lock")
         activity = self.discordBot.activity
         params = {'description': f'Now Playing: {activity}'}
 
