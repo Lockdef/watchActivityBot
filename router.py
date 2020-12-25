@@ -2,7 +2,7 @@ import os
 from threading import Thread
 import asyncio
 from flask import Flask
-from twitter import TwitterApp
+from twitterApp import TwitterApp
 
 app = Flask(__name__)
 app.secret_key = "key"
