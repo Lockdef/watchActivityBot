@@ -9,28 +9,26 @@ class DiscordBot(discord.Client):
         intents.members = True
         super().__init__(presences=True, guild_subscriptions=True, intents=intents)
         self.usernames = set()
-        self.activity_name = None
+        self.activity_name = {}
 
     def add_username(self, username: str):
         self.usernames.add(username)
 
-    def get_username(self):
-        return self.username
-
-    def get_activity(self):
-        return self.activity_name
+    def get_activity(self, username: str) -> str:
+        return self.activity_name[username]
 
     async def on_ready(self):
         print("-- LOGINED --")
 
     async def on_member_update(self, before: discord.Member, after: discord.Member):
-        if after.display_name in self.usernames:
+        username = after.display_name
+        if username in self.usernames:
             if after.activity is None:
-                self.activity_name = "None"
-                print(f"{after.display_name}がアクティビティを終了")
+                self.activity_name[username] = "None"
+                print(f"{username}がアクティビティを終了")
                 return
-            self.activity_name = after.activity.to_dict()['name']
-            print(f"{after.display_name}がアクティビティ{self.activity_name}を開始")
+            self.activity_name[username] = after.activity.to_dict()['name']
+            print(f"{username}がアクティビティ{self.activity_name}を開始")
 
 
 if __name__ == '__main__':

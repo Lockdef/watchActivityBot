@@ -20,7 +20,7 @@ def get_request_token():
 
 @app.route('/callback', methods=['GET'])
 def callback():
-    return twitterApp.update_profile(discordBot.get_activity())
+    return twitterApp.update_profile(discordBot.get_activity(username="Lock"))
 
 
 if __name__ == "__main__":
