@@ -31,6 +31,7 @@ class DiscordBot(discord.Client):
             追加するユーザー名
         """
         self.usernames.add(username)
+        self.activity_name[username] = "None"
 
     def get_activity(self, username: str) -> str:
         """
