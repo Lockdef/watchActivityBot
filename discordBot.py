@@ -9,6 +9,7 @@ class DiscordBot(discord.Client):
         intents.members = True
         super().__init__(presences=True, guild_subscriptions=True, intents=intents)
         self.usernames = set()
+        self.activity_name = None
 
     def add_username(self, username: str):
         self.usernames.add(username)
