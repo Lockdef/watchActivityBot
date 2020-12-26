@@ -6,6 +6,9 @@ import discord
 
 
 class TwitterApp():
+    """
+    Twitter関連の処理を行う
+    """
 
     def get_request_token(self) -> str:
         """
