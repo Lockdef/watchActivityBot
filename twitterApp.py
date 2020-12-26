@@ -1,20 +1,21 @@
 import tweepy
 import logging
-from flask import session, redirect, request
-from setting import API_KEY, API_KEY_SECRET, DISCORD_TOKEN
-from discordBot import DiscordBot
+from flask import session, request
+from setting import API_KEY, API_KEY_SECRET
+import discord
 
 
 class TwitterApp():
 
-    def __init__(self):
-        self.discordBot = DiscordBot()
-        self.discordBot.add_username("Lock")
+    def get_request_token(self) -> str:
+        """
+        TwitterのログインページへのURLを取得する
 
-    def run_discord_bot(self):
-        return self.discordBot.start(DISCORD_TOKEN)
-
-    def get_request_token(self):
+        Returns
+        -------
+        redirect_url : str
+            ログインページのURL
+        """
         auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
 
         try:
@@ -22,9 +23,23 @@ class TwitterApp():
             session['request_token'] = auth.request_token['oauth_token']
         except tweepy.TweepError as error:
             logging.error(error)
-        return redirect(redirect_url)
 
-    def callback(self):
+        return redirect_url
+
+    def update_profile(self, activity: discord.activity.Activity) -> dict:
+        """
+        ユーザーのプロフィールのアクティビティを更新する
+
+        Parameters
+        ----------
+        activity : discord.activity.Activity
+            discordのアクティビティ情報
+
+        Returns
+        -------
+        result: dict
+            update_profileの結果
+        """
         if 'request_token' not in session:
             return False
         token = session.pop('request_token', None)
@@ -36,6 +51,7 @@ class TwitterApp():
                               'oauth_token_secret': verifier}
         auth.get_access_token(verifier)
         api = tweepy.API(auth)
-        activity = self.discordBot.activity
         result = api.update_profile(description=f'Now Playing: {activity}')
-        return result._json
+        result = result._json
+        print(type(result))
+        return result
