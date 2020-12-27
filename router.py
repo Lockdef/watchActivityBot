@@ -1,7 +1,7 @@
 import os
 from threading import Thread
 import asyncio
-from flask import Flask
+from flask import Flask, render_template
 from setting import DISCORD_TOKEN
 from twitterApp import TwitterApp
 from discordBot import DiscordBot
@@ -13,14 +13,15 @@ discordBot = DiscordBot()
 discordBot.add_username('Lock')
 
 
-@app.route('/login', methods=['GET'])
-def get_request_token():
-    return twitterApp.get_request_token()
+@app.route('/', methods=['GET'])
+def index():
+    redirect_url = twitterApp.get_request_token()
+    return render_template("index.html", redirect_url=redirect_url)
 
 
-@app.route('/callback', methods=['GET'])
+@ app.route('/callback', methods=['GET'])
 def callback():
-    return twitterApp.update_profile(discordBot.get_activity(username="Lock"))
+    return "Succeful." if twitterApp.update_profile(discordBot.get_activity(username="Lock")) else "Failed."
 
 
 if __name__ == "__main__":
