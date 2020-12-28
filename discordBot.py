@@ -21,7 +21,7 @@ class DiscordBot(discord.Client):
         self.usernames = set()
         self.activity_name = {}
 
-    def add_username(self, username: str):
+    def add_username(self, username: str, tag: str):
         """
         監視対象のユーザーを追加する
 
@@ -29,11 +29,14 @@ class DiscordBot(discord.Client):
         ----------
         username : str
             追加するユーザー名
+        tag : str
+            追加するユーザーの4桁の整数で構成されるタグ
         """
-        self.usernames.add(username)
-        self.activity_name[username] = "None"
+        user = f"{username}#{tag}"
+        self.usernames.add(user)
+        self.activity_name[user] = "None"
 
-    def get_activity(self, username: str) -> str:
+    def get_activity(self, username: str, tag: str) -> str:
         """
         対象のユーザーのアクティビティ名を取得する
 
@@ -41,13 +44,16 @@ class DiscordBot(discord.Client):
         ----------
         username : str
             アクティビティ名を取得したいユーザー名
+        tag : str
+            追加するユーザーの4桁の整数で構成されるタグ
 
         Returns
         -------
         activity_name : str
             対象のユーザーのアクティビティ名
         """
-        activity_name = self.activity_name[username]
+        user = f"{username}#{tag}"
+        activity_name = self.activity_name[user]
         return activity_name
 
     async def on_ready(self):
@@ -68,14 +74,15 @@ class DiscordBot(discord.Client):
         after : discord.Member
             変更後のメンバー情報
         """
-        username = after.display_name
-        if username in self.usernames:
+        user = f"{after.name}#{after.discriminator}"
+        if user in self.usernames:
             if after.activity is None:
-                self.activity_name[username] = "None"
-                print(f"{username}がアクティビティを終了")
+                self.activity_name[user] = "None"
+                print(f"{user}がアクティビティを終了")
                 return
-            self.activity_name[username] = after.activity.to_dict()['name']
-            print(f"{username}がアクティビティ{self.activity_name}を開始")
+            self.activity_name[user] = after.activity.to_dict()['name']
+            print(
+                f"{user}がアクティビティ{self.activity_name[user]}を開始")
 
 
 if __name__ == '__main__':

@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.secret_key = "key"
 twitterApp = TwitterApp()
 discordBot = DiscordBot()
-discordBot.add_username('Lock')
+discordBot.add_username('Lock', "3426")
 
 
 @app.route('/', methods=['GET'])
@@ -21,7 +21,7 @@ def index():
 
 @ app.route('/callback', methods=['GET'])
 def callback():
-    return "Succeful." if twitterApp.update_profile(discordBot.get_activity(username="Lock")) else "Failed."
+    return "Succeful." if twitterApp.update_profile(discordBot.get_activity("Lock", "3426")) else "Failed."
 
 
 if __name__ == "__main__":
