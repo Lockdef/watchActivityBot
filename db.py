@@ -36,33 +36,34 @@ class User():
             ----------
             uid : int
                 discordユーザーのid
-            api_key : str
+            oauth_token : str
                 twitterのoauthのapikey
-            api_key_secret : str
+            oauth_token_secret : str
                 twitterのoauthのapikeysecret
 
             Attributes
             ----------
             uid : int
                 discordユーザーのid
-            api_key : str
+            oauth_token : str
                 twitterのoauthのapikey
-            api_key_secret : str
+            oauth_token_secret : str
                 twitterのoauthのapikeysecret
             """
             uid = self.db.Column(self.db.Integer(17), unique=True)
-            api_key = self.db.Column(self.db.String(27), unique=True)
-            api_key_secret = self.db.Column(self.db.String(32), unique=True)
+            oauth_token = self.db.Column(self.db.String(27), unique=True)
+            oauth_token_secret = self.db.Column(
+                self.db.String(32), unique=True)
 
-            def __init__(self, uid: int, api_key: str, api_key_secret: str):
+            def __init__(self, uid: int, oauth_token: str, oauth_token_secret: str):
                 self.uid = uid
-                self.api_key = api_key
-                self.api_key_secret = api_key_secret
+                self.oauth_token = oauth_token
+                self.oauth_token_secret = oauth_token_secret
 
         self.UserModel = UserModel
 
-    def add(self, uid: int, api_key: str, api_key_secret: str):
-        user = self.UserModel(uid, api_key, api_key_secret)
+    def add(self, uid: int, oauth_token: str, oauth_token_secret: str):
+        user = self.UserModel(uid, oauth_token, oauth_token_secret)
         self.db.add(user)
         self.db.session.commit()
 
