@@ -1,5 +1,7 @@
 import discord
 from setting import DISCORD_TOKEN
+from twitterApp import TwitterApp
+from db import User
 
 
 class DiscordBot(discord.Client):
@@ -14,47 +16,12 @@ class DiscordBot(discord.Client):
         ユーザーごとのアクティビティ名
     """
 
-    def __init__(self):
+    def __init__(self, user: User, twitterApp: TwitterApp):
+        self.user_ = user
+        self.twitterApp = twitterApp
         intents = discord.Intents.all()
         intents.members = True
         super().__init__(presences=True, guild_subscriptions=True, intents=intents)
-        self.usernames = set()
-        self.activity_name = {}
-
-    def add_username(self, username: str, tag: str):
-        """
-        監視対象のユーザーを追加する
-
-        Parameters
-        ----------
-        username : str
-            追加するユーザー名
-        tag : str
-            追加するユーザーの4桁の整数で構成されるタグ
-        """
-        user = f"{username}#{tag}"
-        self.usernames.add(user)
-        self.activity_name[user] = "None"
-
-    def get_activity(self, username: str, tag: str) -> str:
-        """
-        対象のユーザーのアクティビティ名を取得する
-
-        Parameters
-        ----------
-        username : str
-            アクティビティ名を取得したいユーザー名
-        tag : str
-            追加するユーザーの4桁の整数で構成されるタグ
-
-        Returns
-        -------
-        activity_name : str
-            対象のユーザーのアクティビティ名
-        """
-        user = f"{username}#{tag}"
-        activity_name = self.activity_name[user]
-        return activity_name
 
     async def on_ready(self):
         """
@@ -74,15 +41,19 @@ class DiscordBot(discord.Client):
         after : discord.Member
             変更後のメンバー情報
         """
-        user = f"{after.name}#{after.discriminator}"
-        if user in self.usernames:
-            if after.activity is None:
-                self.activity_name[user] = "None"
-                print(f"{user}がアクティビティを終了")
-                return
-            self.activity_name[user] = after.activity.to_dict()['name']
-            print(
-                f"{user}がアクティビティ{self.activity_name[user]}を開始")
+        uid: int = after.id
+
+        if not self.user_.exists(uid):
+            return
+
+        if after.activity is None:
+            activity = "None"
+            print(f"{uid}がアクティビティを終了")
+        else:
+            activity: str = after.activity.to_dict()['name']
+            print(f"{uid}がアクティビティ{activity}を開始")
+
+        print(self.twitterApp.update_profile(uid, activity))
 
 
 if __name__ == '__main__':
