@@ -79,3 +79,12 @@ class User():
         user = self.db.session.query(self.UserModel).filter_by(uid=uid).first()
         self.db.session.delete(user)
         self.db.session.commit()
+
+    def exists(self, uid: int) -> bool:
+        isExists = self.db.session \
+            .query(self.UserModel) \
+            .filter_by(uid=uid) \
+            .sclar() \
+            is not None
+
+        return isExists
