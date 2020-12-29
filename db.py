@@ -21,12 +21,9 @@ class User():
     """
 
     def __init__(self, app: Flask):
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///"user".db'
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.db'
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
         self.db = SQLAlchemy(app)
-
-        if not os.exists("./user.db"):
-            self.db.create_all()
 
         class UserModel(self.db.Model):
             """
@@ -36,35 +33,40 @@ class User():
             ----------
             uid : int
                 discordユーザーのid
-            oauth_token : str
+            access_token : str
                 twitterのoauthのapikey
-            oauth_token_secret : str
+            access_token_secret : str
                 twitterのoauthのapikeysecret
 
             Attributes
             ----------
             uid : int
                 discordユーザーのid
-            oauth_token : str
+            access_token : str
                 twitterのoauthのapikey
-            oauth_token_secret : str
+            access_token_secret : str
                 twitterのoauthのapikeysecret
             """
-            uid = self.db.Column(self.db.Integer(17), unique=True)
-            oauth_token = self.db.Column(self.db.String(27), unique=True)
-            oauth_token_secret = self.db.Column(
+            uid = self.db.Column(self.db.Integer(), primary_key=True)
+            access_token = self.db.Column(self.db.String(27), unique=True)
+            access_token_secret = self.db.Column(
                 self.db.String(32), unique=True)
 
-            def __init__(self, uid: int, oauth_token: str, oauth_token_secret: str):
+            def __init__(self, uid: int, access_token: str, access_token_secret: str):
                 self.uid = uid
-                self.oauth_token = oauth_token
-                self.oauth_token_secret = oauth_token_secret
+                self.access_token = access_token
+                self.access_token_secret = access_token_secret
+
+        if not os.path.exists("./user.db"):
+            self.db.create_all()
 
         self.UserModel = UserModel
 
-    def add(self, uid: int, oauth_token: str, oauth_token_secret: str):
-        user = self.UserModel(uid, oauth_token, oauth_token_secret)
-        self.db.add(user)
+    def add(self, uid: int, access_token: str, access_token_secret: str):
+        if self.exists(uid):
+            return
+        user = self.UserModel(uid, access_token, access_token_secret)
+        self.db.session.add(user)
         self.db.session.commit()
 
     def read_all(self):
@@ -84,7 +86,7 @@ class User():
         isExists = self.db.session \
             .query(self.UserModel) \
             .filter_by(uid=uid) \
-            .sclar() \
+            .scalar() \
             is not None
 
         return isExists
