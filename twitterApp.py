@@ -2,13 +2,16 @@ import tweepy
 import logging
 from flask import session, request
 from setting import API_KEY, API_KEY_SECRET
-import discord
+from db import User
 
 
 class TwitterApp():
     """
     Twitter関連の処理を行う
     """
+
+    def __init__(self, user: User):
+        self.user = user
 
     def get_request_token(self) -> str:
         """
@@ -29,12 +32,33 @@ class TwitterApp():
 
         return redirect_url
 
-    def update_profile(self, activity: discord.activity.Activity) -> dict:
+    def callback(self):
+        """
+        callbackURLからtokenを取得する
+        """
+        token = session.pop('request_token', None)
+        verifier = request.args.get('oauth_verifier')
+        if token is None or verifier is None:
+            return False
+        auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
+        auth.request_token = {'oauth_token': token,
+                              'oauth_token_secret': verifier}
+        try:
+            auth.get_access_token(verifier)
+        except tweepy.TweepError:
+            print('Error! Failed to get access token.')
+
+        session['access_token'] = auth.access_token
+        session['access_token_secret'] = auth.access_token_secret
+
+    def update_profile(self, uid: int, activity: str) -> dict:
         """
         ユーザーのプロフィールのアクティビティを更新する
 
         Parameters
         ----------
+        uid : int
+            対象ユーザーのid
         activity : discord.activity.Activity
             discordのアクティビティ情報
 
@@ -43,18 +67,16 @@ class TwitterApp():
         result: dict
             update_profileの結果
         """
-        if 'request_token' not in session:
-            return False
-        token = session.pop('request_token', None)
-        verifier = request.args.get('oauth_verifier')
-        if token is None or verifier is None:
-            return False
+
+        user_db = self.user.read_by_uid(uid)
+        key = user_db.access_token
+        secret = user_db.access_token_secret
         auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
-        auth.request_token = {'oauth_token': token,
-                              'oauth_token_secret': verifier}
-        auth.get_access_token(verifier)
+        auth.set_access_token(key, secret)
         api = tweepy.API(auth)
-        result = api.update_profile(description=f'Now Playing: {activity}')
+        # description: str = api.get_user().description
+        # description.replace("%a", activity)
+        description = f'Now Playing : {activity}'
+        result = api.update_profile(description=description)
         result = result._json
-        print(type(result))
-        return result
+        return "OK" if result else "NG"
