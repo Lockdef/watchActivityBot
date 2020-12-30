@@ -1,7 +1,7 @@
 import tweepy
 import logging
 from flask import session, request
-from setting import API_KEY, API_KEY_SECRET
+from settings import API_KEY, API_KEY_SECRET
 from db import User
 
 

@@ -2,7 +2,7 @@ import os
 from threading import Thread
 import asyncio
 from flask import Flask, render_template, request, redirect, session
-from setting import DISCORD_TOKEN
+from settings import DISCORD_TOKEN
 from twitterApp import TwitterApp
 from discordBot import DiscordBot
 from db import User

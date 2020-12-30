@@ -1,5 +1,5 @@
 import discord
-from setting import DISCORD_TOKEN
+from settings import DISCORD_TOKEN
 from twitterApp import TwitterApp
 from db import User
 
