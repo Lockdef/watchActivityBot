@@ -2,16 +2,15 @@ import tweepy
 import logging
 from flask import session, request
 from settings import API_KEY, API_KEY_SECRET
-from db import User
+from repositories.user import UserRepository
+
+user = UserRepository()
 
 
 class TwitterApp():
     """
     Twitter関連の処理を行う
     """
-
-    def __init__(self, user: User):
-        self.user = user
 
     def get_request_token(self) -> str:
         """
@@ -67,10 +66,9 @@ class TwitterApp():
         result: dict
             update_profileの結果
         """
-
-        user_db = self.user.read_by_uid(uid)
-        key = user_db.access_token
-        secret = user_db.access_token_secret
+        user_ = user.read_by_uid(uid)
+        key = user_.access_token
+        secret = user_.access_token_secret
         auth = tweepy.OAuthHandler(API_KEY, API_KEY_SECRET)
         auth.set_access_token(key, secret)
         api = tweepy.API(auth)

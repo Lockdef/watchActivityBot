@@ -1,7 +1,9 @@
 import discord
-from settings import DISCORD_TOKEN
 from twitterApp import TwitterApp
-from db import User
+from repositories.user import UserRepository
+
+user = UserRepository()
+twitterApp = TwitterApp()
 
 
 class DiscordBot(discord.Client):
@@ -16,9 +18,7 @@ class DiscordBot(discord.Client):
         ユーザーごとのアクティビティ名
     """
 
-    def __init__(self, user: User, twitterApp: TwitterApp):
-        self.user_ = user
-        self.twitterApp = twitterApp
+    def __init__(self):
         intents = discord.Intents.all()
         intents.members = True
         super().__init__(presences=True, guild_subscriptions=True, intents=intents)
@@ -43,7 +43,7 @@ class DiscordBot(discord.Client):
         """
         uid: int = after.id
 
-        if not self.user_.exists(uid):
+        if not user.exists(uid):
             return
 
         if after.activity is None:
@@ -53,9 +53,4 @@ class DiscordBot(discord.Client):
             activity: str = after.activity.to_dict()['name']
             print(f"{uid}がアクティビティ{activity}を開始")
 
-        print(self.twitterApp.update_profile(uid, activity))
-
-
-if __name__ == '__main__':
-    bot = DiscordBot()
-    bot.run(DISCORD_TOKEN)
+        print(twitterApp.update_profile(uid, activity))

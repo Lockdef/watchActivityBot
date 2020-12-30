@@ -1,17 +1,10 @@
-import os
-from threading import Thread
-import asyncio
-from flask import Flask, render_template, request, redirect, session
-from settings import DISCORD_TOKEN
+from flask import render_template, request, redirect, session
+from settings import app
+from repositories.user import UserRepository
 from twitterApp import TwitterApp
-from discordBot import DiscordBot
-from db import User
 
-app = Flask(__name__)
-app.secret_key = "key"
-user = User(app)
-twitterApp = TwitterApp(user)
-discordBot = DiscordBot(user, twitterApp)
+twitterApp = TwitterApp()
+user = UserRepository()
 
 
 @app.route('/', methods=['GET'])
@@ -35,13 +28,3 @@ def add_user():
 def callback():
     twitterApp.callback()
     return redirect('/')
-
-
-if __name__ == "__main__":
-    port = os.environ.get('PORT', 3333)
-    host = '0.0.0.0'
-    app_thread = Thread(target=app.run, args=(host, port))
-    app_thread.start()
-    loop = asyncio.get_event_loop()
-    loop.create_task(discordBot.start(DISCORD_TOKEN))
-    Thread(target=loop.run_forever())
