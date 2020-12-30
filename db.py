@@ -64,7 +64,7 @@ class User():
 
     def add(self, uid: int, access_token: str, access_token_secret: str):
         if self.exists(uid):
-            return
+            self.update(uid, access_token, access_token_secret)
         user = self.UserModel(uid, access_token, access_token_secret)
         self.db.session.add(user)
         self.db.session.commit()
@@ -88,5 +88,11 @@ class User():
             .filter_by(uid=uid) \
             .scalar() \
             is not None
-
         return isExists
+
+    def update(self, uid: int, access_token: str, access_token_secret: str):
+        user = self.db.session.query(self.UserModel).filter_by(uid=uid).first()
+        user.access_token = access_token
+        user.access_token_secret = access_token_secret
+        self.db.session.add(user)
+        self.db.session.commit()
