@@ -74,7 +74,7 @@ class TwitterApp():
         api = tweepy.API(auth)
         # description: str = api.get_user().description
         # description.replace("%a", activity)
-        description = f'Now Playing : {activity}'
+        description = f'{activity}をプレイ中'
         result = api.update_profile(description=description)
         result = result._json
         return "OK" if result else "NG"
