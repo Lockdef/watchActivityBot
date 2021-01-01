@@ -1,13 +1,38 @@
 :root {
   --bg-main: #2c2f33;
   --text-white: #fff;
+  --border-black: #000;
+  --button-blue: #7289da;
   background-color: var(--bg-main);
   color: var(--text-white);
 }
 
-.bg {
-  background-color: var(--bg-main);
+.header {
+  border-bottom: 0.2em var(--border-black) solid;
 }
 
-.header {
+.header-title {
+  padding: 0.5em;
+  font-size: 2em;
+}
+
+.main {
+  max-width: 900px;
+  margin: 1em auto;
+  text-align: center;
+}
+
+.button {
+  display: block;
+  width: fit-content;
+  margin: 1em auto;
+  padding: 0.5em 1em;
+  border-radius: 1em;
+  border: white 0.05em solid;
+  background-color: var(--button-blue);
+}
+
+.text {
+  font-size: 1.25em;
+  margin: 0.5em auto;
 }
