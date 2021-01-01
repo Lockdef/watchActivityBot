@@ -8,7 +8,7 @@ from discordBot import DiscordBot
 
 discordBot = DiscordBot()
 
-port = os.environ.get('PORT', 3333)
+port = os.environ.get('PORT', 8080)
 host = '0.0.0.0'
 app_thread = Thread(target=app.run, args=(host, port))
 app_thread.start()
