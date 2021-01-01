@@ -1,0 +1,13 @@
+:root {
+  --bg-main: #2c2f33;
+  --text-white: #fff;
+  background-color: var(--bg-main);
+  color: var(--text-white);
+}
+
+.bg {
+  background-color: var(--bg-main);
+}
+
+.header {
+}
