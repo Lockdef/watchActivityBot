@@ -29,6 +29,21 @@ class DiscordBot(discord.Client):
         """
         print("-- LOGINED --")
 
+    async def on_message(self, message: discord.Message):
+        """
+        メンションされた時に実行される関数
+        DMにidを送信する
+
+        Parameters
+        ----------
+        message : discord.Message
+            メッセージに関する情報
+        """
+        if message.author.bot:
+            return
+        dm = await message.author.create_dm()
+        await dm.send(f"あなたのidは\n`{message.author.id}`")
+
     async def on_member_update(self, before: discord.Member, after: discord.Member):
         """
         メンバーに変化があったときに実行される関数
