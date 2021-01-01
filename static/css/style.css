@@ -1,14 +1,14 @@
 :root {
-  --bg-main: #2c2f33;
-  --text-white: #fff;
-  --border-black: #000;
-  --button-blue: #7289da;
-  background-color: var(--bg-main);
-  color: var(--text-white);
+  --main: #2c2f33;
+  --white: #fff;
+  --black: #000;
+  --blue: #7289da;
+  background-color: var(--main);
+  color: var(--white);
 }
 
 .header {
-  border-bottom: 0.2em var(--border-black) solid;
+  border-bottom: 0.2em var(--black) solid;
 }
 
 .header-title {
@@ -29,10 +29,37 @@
   padding: 0.5em 1em;
   border-radius: 1em;
   border: white 0.05em solid;
-  background-color: var(--button-blue);
+  background-color: var(--blue);
+}
+
+.footer {
+  display: block;
+  position: fixed;
+  width: 100vw;
+  bottom: 0;
+  padding: 0.5em 1em;
+  border: white 0.05em solid;
+  background-color: var(--blue);
+  text-align: center;
 }
 
 .text {
   font-size: 1.25em;
   margin: 0.5em auto;
+}
+
+.input-text {
+  padding: 0.5em 1em;
+  background-color: var(--white);
+  color: var(--main);
+  text-align: left;
+  border: var(--blue) 0.05em solid;
+  border-radius: 1em;
+}
+
+.input-submit {
+  padding: 0.5em 1em;
+  background-color: var(--blue);
+  border: var(--white) 0.05em solid;
+  border-radius: 1em;
 }
