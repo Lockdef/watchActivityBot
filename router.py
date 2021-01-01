@@ -21,7 +21,7 @@ def add_user():
     access_token = session['access_token']
     access_token_secret = session['access_token_secret']
     user.add(uid, access_token, access_token_secret)
-    return "good"
+    return render_template("sucess.html")
 
 
 @ app.route('/callback', methods=['GET'])
