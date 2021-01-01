@@ -1,7 +1,8 @@
 import os
 import dotenv
-from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
+from database import db
+import models  # NOQA
 
 dotenv.load_dotenv(verbose=True)
 DOTENV_PATH = os.path.join(os.path.dirname(__file__), '.env')
@@ -16,7 +17,9 @@ app.secret_key = "key"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-db = SQLAlchemy(app)
+
+db.init_app(app)
 
 if not os.path.exists("./user.db"):
-    db.create_all()
+    with app.app_context():
+        db.create_all()

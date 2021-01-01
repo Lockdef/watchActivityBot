@@ -1,4 +1,4 @@
-from settings import db
+from database import db
 import sys
 sys.path.append('../')
 
