@@ -18,8 +18,8 @@ app.secret_key = "key"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
-db.init_app(app)
+with app.app_context():
+    db.init_app(app)
 
 if not os.path.exists("./user.db"):
-    with app.app_context():
-        db.create_all()
+    db.create_all()
